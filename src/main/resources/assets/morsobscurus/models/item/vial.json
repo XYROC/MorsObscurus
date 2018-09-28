@@ -1,0 +1,9 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0":"morsobscurus:items/vial_empty"
+    },
+    "overrides": [
+        { "predicate": { "content": 1 }, "model": "morsobscurus:item/vial_death_essence" }
+    ]
+}
