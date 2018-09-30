@@ -15,6 +15,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import xyroc.morsobscurus.MorsObscurus;
 
 public class BlockLooseStoneBrick extends BlockFalling {
 
@@ -23,7 +24,7 @@ public class BlockLooseStoneBrick extends BlockFalling {
 		setUnlocalizedName("loose_stone_brick");
 		setRegistryName("loose_stone_brick");
 		setSoundType(blockSoundType.STONE);
-		setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
+		setCreativeTab(MorsObscurus.tab);
 		fallInstantly = false;
 	}
 

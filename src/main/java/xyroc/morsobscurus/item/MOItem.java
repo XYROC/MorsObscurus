@@ -6,6 +6,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
@@ -15,6 +16,8 @@ public class MOItem extends Item {
 
 	public static final Item deathEssence = new ItemDeathEssence();
 	public static final Item vial = new ItemVial();
+	
+	public static final ItemSword bloodSword = new ItemBloodSword();
 
 	public MOItem(String name) {
 		this(name, true);
@@ -25,6 +28,7 @@ public class MOItem extends Item {
 		setRegistryName(name);
 		if (setUnlocalizedName)
 			setUnlocalizedName(name);
+		setCreativeTab(MorsObscurus.tab);
 	}
 
 	public MOItem(String name, int durability) {

@@ -1,5 +1,6 @@
 package xyroc.morsobscurus;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,25 +18,30 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xyroc.morsobscurus.block.BlockLooseStoneBrick;
 import xyroc.morsobscurus.block.tile.TileEntityEssenceStorage;
+import xyroc.morsobscurus.misc.CreativeTabMorsObscurus;
 import xyroc.morsobscurus.proxy.ServerProxy;
 import xyroc.morsobscurus.util.EventManager;
+import xyroc.morsobscurus.util.GuiHandler;
 import xyroc.morsobscurus.util.VersionHandler;
 
-@Mod(modid = "morsobscurus", version = "alpha", acceptedMinecraftVersions = "1.12.2")
+@Mod(modid = Reference.MODID, version = "alpha", acceptedMinecraftVersions = "1.12.2")
 public class MorsObscurus {
 
 	public static final int versionId = 0;
 
 	@Instance
-	MorsObscurus morsObscurus;
+	public static MorsObscurus instance;
 
 	@SidedProxy(serverSide = "xyroc.morsobscurus.proxy.ServerProxy", clientSide = "xyroc.morsobscurus.proxy.ClientProxy")
 	public static ServerProxy proxy;
 
 	public static final Logger logger = LogManager.getLogger("Mors Obscurus");
+	
+	public static CreativeTabMorsObscurus tab = new CreativeTabMorsObscurus();
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
@@ -46,13 +52,15 @@ public class MorsObscurus {
 		data.credits = "XYROC (XIROC)";
 		
 		MinecraftForge.EVENT_BUS.register(new EventManager());
+		
+		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 		proxy.load();
 	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent e) {
 		logger.info("Initialization");
-		GameRegistry.registerTileEntity(TileEntityEssenceStorage.class, "morsobscurus:essence_storage");
+		GameRegistry.registerTileEntity(TileEntityEssenceStorage.class, Reference.MODID+":essence_storage");
 	}
 
 	@EventHandler

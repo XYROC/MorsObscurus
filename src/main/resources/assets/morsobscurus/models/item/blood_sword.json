@@ -1,0 +1,6 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "morsobscurus:items/blood_sword"
+    }
+}

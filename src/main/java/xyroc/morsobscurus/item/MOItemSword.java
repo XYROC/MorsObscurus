@@ -2,13 +2,21 @@ package xyroc.morsobscurus.item;
 
 import java.util.List;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 import xyroc.morsobscurus.MorsObscurus;
@@ -22,46 +30,31 @@ public class MOItemSword extends ItemSword {
 		this.damageAmplification = damageAmplification;
 		setUnlocalizedName(name);
 		setRegistryName(name);
-		setCreativeTab(CreativeTabs.COMBAT);
+		setCreativeTab(MorsObscurus.tab);
 		setNoRepair();
 		setMaxStackSize(1);
 	}
 
 	@Override
-	public float getAttackDamage() {
-		return super.getAttackDamage() * (damageAmplification + 1F);
-	}
-
-	public void writeToNBT(ItemStack item, double damage, float damageAmplification) {
-		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setFloat("tm_damageAmp", damageAmplification);
-		item.setTagInfo("tm_data", nbt);
-	}
-
-	/**
-	 * 
-	 * @param item
-	 *            the itemStack
-	 * @return returns an double[] with a size of 2. damage: data[0],
-	 *         damageAmplification: data[1]
-	 */
-	public double[] readFromNBT(ItemStack item) {
-		if (item.getTagCompound() == null) {
-			MorsObscurus.logger.error("Failed to read NBT Data from " + item + ". (null)");
-			return null;
+	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot) {
+		Multimap<String, AttributeModifier> map = HashMultimap.<String, AttributeModifier>create();
+		if (equipmentSlot == EntityEquipmentSlot.MAINHAND) {
+			map.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER,
+					"Weapon modifier", (double) (3.0 + getAttackDamage()) * (damageAmplification + 1F), 0));
+			
+			map.put(SharedMonsterAttributes.ATTACK_SPEED.getName(),
+					new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, 0));
 		}
-		double[] data = new double[2];
-		NBTTagCompound nbt = item.getTagCompound().getCompoundTag("tm_data");
-		data[1] = damageAmplification = nbt.getFloat("tm_damageAmp");
-		return data;
+		return map;
 	}
 
 	@Override
 	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-		double[] data = readFromNBT(stack);
-		if (data[0] != 0D)
-			tooltip.add("Damage Amplification: " + data[0]*100F+" %");
+		tooltip.add(TextFormatting.BLUE + "Damage Amplification: " + damageAmplification * 100F + " %");
+	}
 
+	public float getDamageAmplification() {
+		return damageAmplification;
 	}
 
 }

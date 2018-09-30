@@ -20,12 +20,12 @@ public class MOItemBow extends ItemBow {
 	public MOItemBow(String name, int durability, float damageAmplification) {
 		super();
 		this.damageAmplification = damageAmplification;
-		setCreativeTab(CreativeTabs.COMBAT);
+		setCreativeTab(MorsObscurus.tab);
 		setNoRepair();
 		setMaxStackSize(1);
 	}
-	
-	//ItemBow
+
+	// ItemBow
 
 	public void writeToNBT(ItemStack item, double damage, float damageAmplification) {
 		NBTTagCompound nbt = new NBTTagCompound();
@@ -55,7 +55,7 @@ public class MOItemBow extends ItemBow {
 	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
 		double[] data = readFromNBT(stack);
 		if (data[0] != 0D)
-			tooltip.add("Damage Amplification: " + data[0]*100F+" %");
+			tooltip.add("Damage Amplification: " + data[0] * 100F + " %");
 
 	}
 

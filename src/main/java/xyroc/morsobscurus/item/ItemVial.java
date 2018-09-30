@@ -9,15 +9,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyroc.morsobscurus.MorsObscurus;
 
 public class ItemVial extends MOItem {
 
 	public ItemVial() {
 		super("vial",false);
-		setMaxStackSize(1024);
+		setMaxStackSize(512);
 		setMaxDamage(0);
 		setNoRepair();
-		setCreativeTab(CreativeTabs.MISC);
 		setHasSubtypes(true);
 		addPropertyOverride(new ResourceLocation("content"), new IItemPropertyGetter() {
 			

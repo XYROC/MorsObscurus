@@ -1,7 +1,10 @@
 item.death_essence.name=Death Essence
+item.blood_sword.name=Blood Sword
 
 tile.loose_stone_brick.name=Loose Stone Bricks
 tile.essence_storage.name=Essence Storage
+
+itemGroup.morsobscurus=Mors Obscurus
 
 vial_empty.name=Empty Vial
 vial_death_essence.name=Vial of Death Essence

@@ -10,13 +10,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import xyroc.morsobscurus.item.ItemVial;
 import xyroc.morsobscurus.item.MOItem;
+import xyroc.morsobscurus.util.BigItemStackHelper;
 
 public class TileEntityEssenceStorage extends TileEntity implements IInventory {
 
 	private final int size = 12;
 
 	private NonNullList<ItemStack> storage = NonNullList.<ItemStack>withSize(size, ItemStack.EMPTY);
-	// TileEntityChest
+	// TileEntityFurnace
 
 	public TileEntityEssenceStorage() {
 	}
@@ -24,7 +25,26 @@ public class TileEntityEssenceStorage extends TileEntity implements IInventory {
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
-		ItemStackHelper.saveAllItems(compound, storage);
+		NBTTagList nbttaglist = new NBTTagList();
+
+        for (int i = 0; i < storage.size(); ++i)
+        {
+            ItemStack itemstack = storage.get(i);
+
+            if (!itemstack.isEmpty())
+            {
+                NBTTagCompound nbttagcompound = new NBTTagCompound();
+                nbttagcompound.setByte("Slot", (byte)i);
+                BigItemStackHelper.writeItemStackToNBT(itemstack, nbttagcompound);
+                nbttaglist.appendTag(nbttagcompound);
+            }
+        }
+
+        if (!nbttaglist.hasNoTags())
+        {
+        	compound.setTag("Items", nbttaglist);
+        }
+
 		return compound;
 	}
 
@@ -32,7 +52,18 @@ public class TileEntityEssenceStorage extends TileEntity implements IInventory {
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
 		this.storage = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
-		ItemStackHelper.loadAllItems(compound, this.storage);
+		NBTTagList nbttaglist = compound.getTagList("Items", 10);
+
+        for (int i = 0; i < nbttaglist.tagCount(); ++i)
+        {
+            NBTTagCompound nbttagcompound = nbttaglist.getCompoundTagAt(i);
+            int j = nbttagcompound.getByte("Slot") & 255;
+
+            if (j >= 0 && j < storage.size())
+            {
+                storage.set(j, BigItemStackHelper.readItemStackFromNBT(nbttagcompound));
+            }
+        }
 	}
 
 	@Override
@@ -50,9 +81,14 @@ public class TileEntityEssenceStorage extends TileEntity implements IInventory {
 		return size;
 	}
 
-	@Override
 	public boolean isEmpty() {
-		return false;
+		for (ItemStack itemstack : this.storage) {
+			if (!itemstack.isEmpty()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Override
@@ -60,38 +96,12 @@ public class TileEntityEssenceStorage extends TileEntity implements IInventory {
 		return storage.get(index);
 	}
 
-	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		if (this.getStackInSlot(index) != null) {
-			ItemStack itemstack;
-
-			if (this.getStackInSlot(index).getCount() <= count) {
-				itemstack = this.getStackInSlot(index);
-				this.setInventorySlotContents(index, null);
-				this.markDirty();
-				return itemstack;
-			} else {
-				itemstack = this.getStackInSlot(index).splitStack(count);
-
-				if (this.getStackInSlot(index).getCount() <= 0) {
-					this.setInventorySlotContents(index, null);
-				} else {
-					// Just to show that changes happened
-					this.setInventorySlotContents(index, this.getStackInSlot(index));
-				}
-				this.markDirty();
-				return itemstack;
-			}
-		} else {
-			return null;
-		}
+		return ItemStackHelper.getAndSplit(this.storage, index, count);
 	}
 
-	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		ItemStack stack = getStackInSlot(index);
-		storage.set(index, ItemStack.EMPTY);
-		return stack;
+		return ItemStackHelper.getAndRemove(this.storage, index);
 	}
 
 	@Override
